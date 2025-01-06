@@ -21,20 +21,15 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
     @GetMapping("/items")
-    public String items(Model model) {
+    public String getItems(Model model) {
         List<Item> items = itemService.getItems();
         model.addAttribute("items", items);
         return "items";
     }
 
     @GetMapping("/items/{itemId}")
-    public String item(@PathVariable long itemId, Model model) {
+    public String getItem(@PathVariable Long itemId, Model model) {
         Item item = itemService.getItem(itemId);
         model.addAttribute("item", item);
         return "item";
@@ -61,8 +56,14 @@ public class ItemController {
     }
 
     @PostMapping("/items/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute EditItemForm editItemForm) {
+    public String editItem(@PathVariable Long itemId, @ModelAttribute EditItemForm editItemForm) {
         itemService.editItem(itemId, editItemForm);
         return "redirect:/items/{itemId}";
+    }
+
+    @GetMapping("/items/{itemId}/delete")
+    public String deleteItem(@PathVariable Long itemId) {
+        itemService.deleteItem(itemId);
+        return "redirect:/items";
     }
 }
