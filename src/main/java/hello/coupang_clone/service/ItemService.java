@@ -2,12 +2,14 @@ package hello.coupang_clone.service;
 
 import hello.coupang_clone.domain.Item;
 import hello.coupang_clone.repository.ItemRepository;
-import hello.coupang_clone.request.AddItemForm;
-import hello.coupang_clone.request.EditItemForm;
+import hello.coupang_clone.request.AddItemRequest;
+import hello.coupang_clone.request.EditItemRequest;
+import hello.coupang_clone.response.ItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,28 +18,43 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public List<Item> getItems() {
-        return itemRepository.findAll();
+    public List<ItemResponse> getItems() {
+        List<ItemResponse> list = new ArrayList<>();
+        for (Item i : itemRepository.findAll()) {
+            list.add(ItemResponse.builder()
+                    .id(i.getId())
+                    .name(i.getName())
+                    .price(i.getPrice())
+                    .stock(i.getStock())
+                    .build());
+        }
+        return list;
     }
 
-    public Item addItem(AddItemForm addItemForm) {
+    public Item addItem(AddItemRequest addItemRequest) {
         Item item = Item.builder()
-                .name(addItemForm.getName())
-                .price(addItemForm.getPrice())
-                .stock(addItemForm.getStock())
+                .name(addItemRequest.getName())
+                .price(addItemRequest.getPrice())
+                .stock(addItemRequest.getStock())
                 .build();
 
         return itemRepository.save(item);
     }
 
-    public Item getItem(Long id) {
-        return itemRepository.findById(id).orElseThrow();
+    public ItemResponse getItem(Long id) {
+        Item findItem = itemRepository.findById(id).orElseThrow();
+        return ItemResponse.builder()
+                .id(findItem.getId())
+                .name(findItem.getName())
+                .price(findItem.getPrice())
+                .stock(findItem.getStock())
+                .build();
     }
 
     @Transactional
-    public void editItem(Long id, EditItemForm form) {
+    public void editItem(Long id, EditItemRequest editItemRequest) {
         Item item = itemRepository.findById(id).orElseThrow();
-        item.edit(form.getName(), form.getPrice(), form.getStock());
+        item.edit(editItemRequest.getName(), editItemRequest.getPrice(), editItemRequest.getStock());
     }
 
     public void deleteItem(Long id) {

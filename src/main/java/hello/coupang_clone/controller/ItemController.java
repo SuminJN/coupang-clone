@@ -1,8 +1,9 @@
 package hello.coupang_clone.controller;
 
 import hello.coupang_clone.domain.Item;
-import hello.coupang_clone.request.AddItemForm;
-import hello.coupang_clone.request.EditItemForm;
+import hello.coupang_clone.request.AddItemRequest;
+import hello.coupang_clone.request.EditItemRequest;
+import hello.coupang_clone.response.ItemResponse;
 import hello.coupang_clone.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,14 +24,14 @@ public class ItemController {
 
     @GetMapping("/items")
     public String getItems(Model model) {
-        List<Item> items = itemService.getItems();
+        List<ItemResponse> items = itemService.getItems();
         model.addAttribute("items", items);
         return "items";
     }
 
     @GetMapping("/items/{itemId}")
     public String getItem(@PathVariable Long itemId, Model model) {
-        Item item = itemService.getItem(itemId);
+        ItemResponse item = itemService.getItem(itemId);
         model.addAttribute("item", item);
         return "item";
     }
@@ -41,8 +42,8 @@ public class ItemController {
     }
 
     @PostMapping("/items/add")
-    public String addItem(@ModelAttribute AddItemForm addItemForm, RedirectAttributes redirectAttributes) {
-        Item savedItem = itemService.addItem(addItemForm);
+    public String addItem(@ModelAttribute AddItemRequest addItemRequest, RedirectAttributes redirectAttributes) {
+        Item savedItem = itemService.addItem(addItemRequest);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/items/{itemId}";
@@ -50,14 +51,14 @@ public class ItemController {
 
     @GetMapping("/items/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
-        Item item = itemService.getItem(itemId);
+        ItemResponse item = itemService.getItem(itemId);
         model.addAttribute("item", item);
         return "editForm";
     }
 
     @PostMapping("/items/{itemId}/edit")
-    public String editItem(@PathVariable Long itemId, @ModelAttribute EditItemForm editItemForm) {
-        itemService.editItem(itemId, editItemForm);
+    public String editItem(@PathVariable Long itemId, @ModelAttribute EditItemRequest editItemRequest) {
+        itemService.editItem(itemId, editItemRequest);
         return "redirect:/items/{itemId}";
     }
 

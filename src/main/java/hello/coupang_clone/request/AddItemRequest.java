@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AddItemForm {
+public class AddItemRequest {
 
     private String name;
     private int price;
