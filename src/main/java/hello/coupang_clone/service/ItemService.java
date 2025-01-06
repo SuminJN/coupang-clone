@@ -20,14 +20,14 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public void addItem(AddItemForm addItemForm) {
+    public Item addItem(AddItemForm addItemForm) {
         Item item = Item.builder()
                 .name(addItemForm.getName())
                 .price(addItemForm.getPrice())
                 .stock(addItemForm.getStock())
                 .build();
 
-        itemRepository.save(item);
+        return itemRepository.save(item);
     }
 
     public Item getItem(Long id) {
@@ -35,8 +35,8 @@ public class ItemService {
     }
 
     @Transactional
-    public void editItem(EditItemForm form) {
-        Item item = itemRepository.findById(form.getId()).orElseThrow();
+    public void editItem(Long id, EditItemForm form) {
+        Item item = itemRepository.findById(id).orElseThrow();
         item.edit(form.getName(), form.getPrice(), form.getStock());
     }
 
